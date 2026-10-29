@@ -38,4 +38,16 @@
             android:entryValues="@array/radio_values"
             android:defaultValue="0" />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/cat_tracking">
+        <SwitchPreferenceCompat
+            android:key="strip_links"
+            android:persistent="false"
+            android:title="@string/strip_links_title"
+            android:summary="@string/strip_links_summary" />
+        <Preference
+            android:key="ad_id"
+            android:title="@string/ad_id_title"
+            android:summary="@string/ad_id_summary" />
+    </PreferenceCategory>
 </PreferenceScreen>

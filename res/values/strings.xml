@@ -25,6 +25,13 @@
     <string name="wifi_timeout_title">Turn off Wi-Fi when not connected</string>
     <string name="bt_timeout_title">Turn off Bluetooth when idle</string>
 
+    <string name="cat_tracking">Tracking</string>
+    <string name="strip_links_title">Remove tracking from copied links</string>
+    <string name="strip_links_summary">Strips utm_, fbclid, gclid and similar parameters from links when you copy them</string>
+    <string name="ad_id_title">Advertising ID</string>
+    <string name="ad_id_summary">Blocked for every app. Tap to delete the ID itself</string>
+    <string name="ad_id_blocked">Blocked for every app</string>
+
     <string name="off">Off</string>
     <string name="min_5">5 minutes</string>
     <string name="min_15">15 minutes</string>

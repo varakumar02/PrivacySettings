@@ -1,9 +1,11 @@
 package org.aox.privacy;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.InputType;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.settingslib.widget.SettingsBasePreferenceFragment;
 
@@ -22,7 +25,15 @@ import java.util.concurrent.Executors;
 import lineageos.providers.LineageSettings;
 
 public class PrivacyFragment extends SettingsBasePreferenceFragment {
+    // Settings.Secure key read by ClipboardService; 1 (default) strips tracking from copied links.
+    private static final String STRIP_LINKS = "aox_strip_link_tracking";
+    // Play services' Ads screen with "Delete advertising ID"; the older screen only has Reset.
+    private static final String[] ADS_SETTINGS = {
+            "com.google.android.gms.adsidentity.ACTION_ADS_IDENTITY_SETTINGS",
+            "com.google.android.gms.settings.ADS_PRIVACY"};
+
     private ListPreference mUsb;
+    private SwitchPreferenceCompat mStripLinks;
     private Preference mDuress;
 
     @Override
@@ -37,6 +48,24 @@ public class PrivacyFragment extends SettingsBasePreferenceFragment {
                     LineageSettings.Global.TRUST_RESTRICT_USB, Integer.parseInt((String) v));
             return true;
         });
+
+        mStripLinks = findPreference("strip_links");
+        mStripLinks.setOnPreferenceChangeListener((p, v) -> {
+            Settings.Secure.putInt(requireContext().getContentResolver(), STRIP_LINKS,
+                    (Boolean) v ? 1 : 0);
+            return true;
+        });
+
+        final Preference adId = findPreference("ad_id");
+        adId.setSummary(R.string.ad_id_blocked);
+        for (String action : ADS_SETTINGS) {
+            final Intent ads = new Intent(action);
+            if (ads.resolveActivity(requireContext().getPackageManager()) != null) {
+                adId.setIntent(ads);
+                adId.setSummary(R.string.ad_id_summary);
+                break;
+            }
+        }
 
         mDuress = findPreference("duress");
         mDuress.setOnPreferenceClickListener(p -> {
@@ -152,6 +181,8 @@ public class PrivacyFragment extends SettingsBasePreferenceFragment {
         mUsb.setValue(String.valueOf(LineageSettings.Global.getInt(
                 requireContext().getContentResolver(),
                 LineageSettings.Global.TRUST_RESTRICT_USB, 0)));
+        mStripLinks.setChecked(Settings.Secure.getInt(requireContext().getContentResolver(),
+                STRIP_LINKS, 1) != 0);
         updateDuressSummary();
     }
 }

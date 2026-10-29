@@ -29,5 +29,18 @@
             android:label="@string/app_name"
             android:exported="true" />
 
+        <!-- Settings search indexes privacy.xml through this provider -->
+        <provider
+            android:name=".SearchProvider"
+            android:authorities="org.aox.privacy.search"
+            android:multiprocess="false"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.READ_SEARCH_INDEXABLES"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
+            </intent-filter>
+        </provider>
+
     </application>
 </manifest>
